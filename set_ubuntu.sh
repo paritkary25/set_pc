@@ -5,7 +5,6 @@ printf "Custom script by Y.U.P. to easily set up the machine\n"
 printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
 
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
-echo $SCRIPT_DIR
 
 if nc -zw1 google.com 443 > /dev/null 2>&1; then
     printf "\nConnected to the internet\n\n"
@@ -109,10 +108,13 @@ if [ $setup -gt 0 ]; then
 
     printf ">> Adding System Monitor shortcut to 'Ctrl' + 'Shift' + 'Esc'\n"
     python3 $SCRIPT_DIR/set_shortcut.py 'Gnome System Monitor' 'gnome-system-monitor' '<Control><Shift>Escape'
-
-    fi
     
-    if [ $setup -gt 2 ]; then
+    printf ">> Installing Tux Racer ...\n"
+    sudo apt install -y extremetuxracer
+
+fi
+    
+if [ $setup -gt 2 ]; then
 
     printf ">> Updating /etc/systemd/logind.conf to ignore lid status"
     sudo sed 's/#HandleLidSwitch=suspend/HandleLidSwitch=ignore/' /etc/systemd/logind.conf -n
@@ -159,9 +161,9 @@ if [ $setup -gt 0 ]; then
     sudo apt install -y zim
 
     
-    fi
+fi
 	
-    if [ $setup -gt 3 ]; then
+if [ $setup -gt 3 ]; then
     
     printf "> Installing Octave ...\n"
     sudo apt install -y octave

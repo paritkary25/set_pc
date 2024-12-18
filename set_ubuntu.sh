@@ -4,7 +4,8 @@ printf "Ubuntu Setup Script\n"
 printf "Custom script by Y.U.P. to easily set up the machine\n"
 printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+echo $SCRIPT_DIR
 
 if nc -zw1 google.com 443 > /dev/null 2>&1; then
     printf "\nConnected to the internet\n\n"
@@ -13,15 +14,25 @@ else
     exit 0
 fi    
 
-printf "Setup types:\n"
-printf "0 = Do Nothing (Exit)\n"
-printf "1 = Only update packages\n"
-printf "2 = Basic desktop setup\n"
-printf "3 = Basic engineering setup\n"
-printf "4 = Full engineering setup\n"
-printf "Enter setup type: "
+if [ $# -eq 0 ]; then
+    printf "Setup types:\n"
+    printf "0 = Do Nothing (Exit)\n"
+    printf "1 = Only update packages\n"
+    printf "2 = Basic desktop setup\n"
+    printf "3 = Basic engineering setup\n"
+    printf "4 = Full engineering setup\n"
+    printf "Enter setup type: "
 
-read setup
+   read setup
+
+elif [ $# -eq 1 ]; then
+    setup=$1 
+
+else
+    echo "Too many arguments"
+    exit 0
+fi
+
 
 if [ $setup -gt 4 ] || [ $setup -le 0 ]; then
     printf "Invalid input\n"
@@ -92,6 +103,12 @@ if [ $setup -gt 0 ]; then
 
     printf "> Installing tessaract ocr ...\n"
     sudo apt install -y tesseract-ocr
+    
+    printf ">> Adding terminal shortcut to 'Super' + 'grave'\n"
+    python3 $SCRIPT_DIR/set_shortcut.py 'Gnome-Terminal' 'gnome-terminal' '<Super>grave'
+
+    printf ">> Adding System Monitor shortcut to 'Ctrl' + 'Shift' + 'Esc'\n"
+    python3 $SCRIPT_DIR/set_shortcut.py 'Gnome System Monitor' 'gnome-system-monitor' '<Control><Shift>Escape'
 
     fi
     
@@ -122,12 +139,6 @@ if [ $setup -gt 0 ]; then
     printf ">> Changing shortcut key for calculator ...\n"
     gsettings set org.gnome.settings-daemon.plugins.media-keys calculator-static "['']"
     python3 $SCRIPT_DIR/set_shortcut.py 'Open Qalculate' 'qalculate' 'Calculator'
-    
-    printf ">> Adding terminal shortcut to 'Super' + 'grave'\n"
-    python3 $SCRIPT_DIR/set_shortcut.py 'Gnome-Terminal' 'gnome-terminal' '<Super>grave'
-
-    printf ">> Adding System Monitor shortcut to 'Ctrl' + 'Shift' + 'Esc'\n"
-    python3 $SCRIPT_DIR/set_shortcut.py 'Gnome System Monitor' 'gnome-system-monitor' '<Control><Shift>Escape'
     
     printf "> Installing xcircuit ...\n"
     sudo apt install -y xcircuit

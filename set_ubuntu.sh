@@ -140,7 +140,7 @@ if [ $setup -gt 2 ]; then
     
     printf ">> Changing shortcut key for calculator ...\n"
     gsettings set org.gnome.settings-daemon.plugins.media-keys calculator-static "['']"
-    python3 $SCRIPT_DIR/set_shortcut.py 'Open Qalculate' 'qalculate' 'Calculator'
+    python3 $SCRIPT_DIR/set_shortcut.py 'Open Qalculate' 'qalculate-gtk' 'Calculator'
     
     printf "> Installing xcircuit ...\n"
     sudo apt install -y xcircuit
